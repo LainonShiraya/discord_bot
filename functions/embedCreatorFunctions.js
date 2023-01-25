@@ -21,9 +21,9 @@ const showAllUsersEmbed = () => {
           let decklists = user.decklists
             .map(function (decklist) {
               return (
-                `\n ** ${decklist.id}. ${
-                  decklist.deckname
-                }** Games played : ${deckGamesPlayed(
+                `\n ** ${decklist.selected ? ":white_check_mark: " : ""}${
+                  decklist.id
+                }. ${decklist.deckname}** Games played : ${deckGamesPlayed(
                   decklist
                 )} | Win ratio: ${deckWinPerc(decklist)}%` +
                 " \n " +
@@ -59,9 +59,9 @@ const showCertainUserEmbed = (userFound, interaction) => {
     .addFields(
       userFound.decklists.map(function (decklist) {
         return {
-          name: `** ${decklist.id}. ${
-            decklist.deckname
-          }** Games played : ${deckGamesPlayed(
+          name: `** ${decklist.selected ? ":white_check_mark:  " : ""} ${
+            decklist.id
+          }. ${decklist.deckname}** Games played : ${deckGamesPlayed(
             decklist
           )} | Win ratio: ${deckWinPerc(decklist)}%`,
           value: decklist.decklink,

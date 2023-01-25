@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { users } = require("../mockupData.js");
+const {findUserInDatabase, addUserToDatabase } = require('../functions/MysqlDataManagementFunctions');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("register")
@@ -7,21 +8,25 @@ module.exports = {
   async execute(interaction) {
     // variables //
     const commandUser = interaction.user.username;
-    const findUser = users.some(user => user.username === commandUser);
-    /////////////////
-    if (interaction.commandName === "register") {
-      if (findUser) {
-        await interaction.reply(`${commandUser} user is already registered~!`);
-      }
-      if (!findUser) {
-        users.push({
-          username: commandUser,
-          decklists: [],
-        });
-        await interaction.reply(
-          `${commandUser} sucesfully added to database~!`
-        );
-      }
-    }
+     findUserInDatabase(interaction.user.id)
+	 .then(
+		async res => {
+			if(res){
+				await interaction.reply(`${commandUser} user is already registered~!`);
+			}	
+			if(!res){
+				addUserToDatabase(interaction.user.id, commandUser).then(async res => {
+					if(res > 0){
+						await interaction.reply(
+							`${commandUser} sucesfully added user to database~!`
+						  );
+					} else {
+						await interaction.reply(
+							`${commandUser} something went wrong with adding user to database~!`
+						  );
+					}
+				})
+			}
+		}); 
   },
 };

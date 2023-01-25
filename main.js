@@ -25,20 +25,30 @@ for (const file of commandFiles) {
 }
 
 client.on("interactionCreate", async interaction => {
-  if (!interaction.isCommand()) return;
-  if (
-    !interaction.channel
-      .permissionsFor(client.user)
-      .has(Permissions.FLAGS.SEND_MESSAGES)
-  )
-    return;
+  // if (
+  //   !interaction.channel.permissionsFor(client.user)
+  //   // .has(Permissions.FLAGS.SEND_MESSAGES)
+  // )
+  //   return;
+  console.log("sprawdzaimy interaction commandname");
   console.log(interaction.commandName);
   const command = client.commands.get(interaction.commandName);
 
-  if (!command) return;
+  if (!command && !interaction.isSelectMenu() && !interaction.isButton())
+    return;
 
   try {
-    await command.execute(interaction);
+    if (interaction.isCommand()) await command.execute(interaction);
+    if (interaction.isAutocomplete()) await command.autocomplete(interaction);
+    if (interaction.isSelectMenu())
+      await client.commands.get("game").selectmenus(interaction);
+    //if (interaction.isButton()) return;
+    // await client.commands.get("game").selectmenus(interaction);
+    //   await client.commands.get("game").buttonSubmit(interaction); //await command.selectmenus(interaction);
+    // if (interaction.isModalSubmit()) {
+    //   console.log("dzialaa");
+    //   await client.commands.get("game").modalsubmit(interaction);
+    // }
   } catch (error) {
     console.error(error);
     await interaction.reply({
