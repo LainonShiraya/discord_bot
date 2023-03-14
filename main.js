@@ -1,11 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Intents, Collection } = require("discord.js");
-const { token } = require("./config.json");
-const { users } = require("./mockupData.js");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+require('dotenv').config();
+const client = new Client({ intents: ["GUILDS"] });
 
-client.once("ready", () => {
+client.once("ready", async () => {
   console.log("Ready!");
 });
 
@@ -21,16 +20,13 @@ for (const file of commandFiles) {
   // Set a new item in the Collection
   // With the key as the command name and the value as the exported module
   client.commands.set(command.data.name, command);
+  console.log("Checking command names");
   console.log(command.data.name);
 }
 
 client.on("interactionCreate", async interaction => {
-  // if (
-  //   !interaction.channel.permissionsFor(client.user)
-  //   // .has(Permissions.FLAGS.SEND_MESSAGES)
-  // )
-  //   return;
-  console.log("sprawdzaimy interaction commandname");
+
+  console.log("Checking commands funcionality");
   console.log(interaction.commandName);
   const command = client.commands.get(interaction.commandName);
 
@@ -42,13 +38,6 @@ client.on("interactionCreate", async interaction => {
     if (interaction.isAutocomplete()) await command.autocomplete(interaction);
     if (interaction.isSelectMenu())
       await client.commands.get("game").selectmenus(interaction);
-    //if (interaction.isButton()) return;
-    // await client.commands.get("game").selectmenus(interaction);
-    //   await client.commands.get("game").buttonSubmit(interaction); //await command.selectmenus(interaction);
-    // if (interaction.isModalSubmit()) {
-    //   console.log("dzialaa");
-    //   await client.commands.get("game").modalsubmit(interaction);
-    // }
   } catch (error) {
     console.error(error);
     await interaction.reply({
@@ -57,4 +46,4 @@ client.on("interactionCreate", async interaction => {
     });
   }
 });
-client.login(token);
+client.login(process.env.DISC_TOKEN);

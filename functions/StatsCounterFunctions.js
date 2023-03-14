@@ -3,18 +3,22 @@ const deckGamesPlayed = decklist => {
 };
 
 const deckWinPerc = decklist => {
-  const number = decklist.wins / (decklist.wins + decklist.loses);
+	if(decklist.Games === 0){
+		return 0;
+	}
+	else {
+  const number = decklist.Wins / decklist.Games;
   return (number * 100).toFixed(2);
+	}
 };
 
-const playerWinPerc = user => {
-  let wins = 0;
-  let loses = 0;
-  user.decklists.map(
-    decklist => (wins += decklist.wins) && (loses += decklist.loses)
-  );
-  number = wins / (wins + loses);
+const playerWinPerc = (wins,games) => {
+	if(games === 0){
+		return 0;
+	} else {
+  number = wins / games;
   return (number * 100).toFixed(2);
+	}
 };
 
 const playerGamesPlayed = user => {
@@ -22,7 +26,6 @@ const playerGamesPlayed = user => {
   user.decklists.map(
     decklist => (gamesPlayed += decklist.wins + decklist.loses)
   );
-  console.log("gamesPlayed: " + gamesPlayed);
   return gamesPlayed;
 };
 

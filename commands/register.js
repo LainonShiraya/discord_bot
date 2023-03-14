@@ -8,14 +8,15 @@ module.exports = {
   async execute(interaction) {
     // variables //
     const commandUser = interaction.user.username;
-     findUserInDatabase(interaction.user.id)
+	const commandUserId = interaction.user.id;
+     findUserInDatabase(commandUserId)
 	 .then(
 		async res => {
 			if(res){
 				await interaction.reply(`${commandUser} user is already registered~!`);
 			}	
 			if(!res){
-				addUserToDatabase(interaction.user.id, commandUser).then(async res => {
+				addUserToDatabase(commandUserId, commandUser).then(async res => {
 					if(res > 0){
 						await interaction.reply(
 							`${commandUser} sucesfully added user to database~!`

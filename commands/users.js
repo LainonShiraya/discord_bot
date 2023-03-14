@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { users } = require("../mockupData.js");
 const { MessageEmbed } = require("discord.js");
+const {findUserInDatabase } = require('../functions/MysqlDataManagementFunctions');
+
 const {
   showAllUsersEmbed,
   showCertainUserEmbed,
@@ -37,38 +39,43 @@ module.exports = {
     //variables //
     const subCommandsGroup = interaction.options.getSubcommandGroup();
     const subCommands = interaction.options.getSubcommand();
+	const  user = interaction.options.getUser("user");
     /////////////////
     if (subCommandsGroup === "show") {
       if (subCommands === "all") {
-        interaction.reply({ embeds: [showAllUsersEmbed()] });
+
+			const api =	await showAllUsersEmbed().then( response => {
+			 	 return response;
+				});
+
+			const embed = new MessageEmbed()
+			.setColor("#0099ff")
+			.setTitle("Statistics of all users: ")
+			.addFields(api)
+			.setDescription('It shows decks that got selected on atleast once');
+
+			await interaction.reply({ embeds: [embed] });
+
       }
       if (subCommands === "user") {
-        //variables //
-        const userFound = users.find(
-          user => user.username === interaction.options.getUser("user").username
-        );
-        /////////////////
-        if (userFound) {
-          if (userFound.decklists.length > 0) {
-            interaction.reply({
-              embeds: [showCertainUserEmbed(userFound, interaction)],
-            });
-          }
-          if (!(userFound.decklists.length > 0)) {
-            await interaction.reply(
-              ` ${
-                interaction.options.getUser("user").username
-              } has no decklists added`
-            );
-          }
-        }
-        if (!userFound) {
-          await interaction.reply(
+
+		const userExists = await findUserInDatabase(user.id).then(res => {
+			return res;
+		})
+
+		if(userExists){
+			const api = await showCertainUserEmbed(interaction).then( res => {
+				return res;
+			} )
+				await interaction.reply({ embeds: [api] });
+		}
+		else {
+ await interaction.reply(
             ` ${
-              interaction.options.getUser("user").username
+				user.username
             } has not registered to database`
           );
-        }
+		}
       }
     }
   },
