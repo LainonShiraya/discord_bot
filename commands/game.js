@@ -112,10 +112,10 @@ module.exports = {
 	
     const tmp = interaction.message.embeds[0].description;
     const message = tmp.split("\n");
-    player1 = message[1];
-    player2 = message[2];
-    player3 = message[3];
-    player4 = message[4];
+    player1 = message[2];
+    player2 = message[4];
+    player3 = message[6];
+    player4 = message[8];
 
 	const winnerId = interaction.values[0];
 	winner = await selectUserInDatabase(winnerId);
