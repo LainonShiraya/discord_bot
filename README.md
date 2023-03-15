@@ -23,9 +23,41 @@ on each discord separately.
   ```
   * To start the application
  ```sh
- npm start
+ node commands.js - to save the commands on discord channel ( uses the guildId )
+ 
+ node main.js - to start the application
  ```
  
  ## Database Structure
  
+ ### [MySQL Database create script](https://github.com/LainonShiraya/discord_bot/blob/main/Discord_bot.sql)
+ 
  ![obraz](https://user-images.githubusercontent.com/59234543/225377604-d6b76a37-d151-4ef0-8f9c-bd38ab20ce7c.png)
+ 
+### Structure of .env file required to connect with database
+```
+DB_HOST= database host ( if locally, localhost )
+DB_USER= database user/login
+DB_PASS= database password
+DB_DATABASE= name of MySQL database
+DISC_TOKEN= Token of discord bot from discord developer website
+```
+
+# Bot Commands
+
+![obraz](https://user-images.githubusercontent.com/59234543/225380951-23e47d75-0a2b-4ae0-9204-40e67da340d2.png)
+
+## Screenshot examples
+
+![obraz](https://user-images.githubusercontent.com/59234543/225382226-05ab85b1-592b-4405-97f4-a0bd378ecf46.png)
+#### Green tick means that decklist is currently selected by the user, and next games he plays will be saved to this decklist
+
+ <p float="center" align="center">
+ 
+![obraz](https://user-images.githubusercontent.com/59234543/225383279-4a809e47-f041-4587-92af-7b023064da58.png)
+
+![obraz](https://user-images.githubusercontent.com/59234543/225385565-a249d737-6ede-4a89-8dc2-a966467bda6d.png)
+
+![obraz](https://user-images.githubusercontent.com/59234543/225385491-4f14e763-1ada-49fa-b7d6-ab13ab6ef708.png)
+</p>
+
