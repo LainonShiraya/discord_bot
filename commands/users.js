@@ -1,30 +1,29 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-const { users } = require("../mockupData.js");
-const { MessageEmbed } = require("discord.js");
-const {findUserInDatabase } = require('../functions/MysqlDataManagementFunctions');
-
+const { SlashCommandBuilder } = require("@discordjs/builders")
+const { MessageEmbed } = require("discord.js")
+const { findUserInDatabase } = require("../database/MySqlUserQueries.js")
 const {
   showAllUsersEmbed,
   showCertainUserEmbed,
-} = require("../functions/embedCreatorFunctions");
+} = require("../functions/embedCreatorFunctions")
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("users")
     .setDescription("Options related to the users !")
-    .addSubcommandGroup(subcommand =>
+    .addSubcommandGroup((subcommand) =>
       subcommand
         .setName("show")
         .setDescription("show user data!")
-        .addSubcommand(comm =>
+        .addSubcommand((comm) =>
           comm
             .setName("all")
             .setDescription("Show all users with statistics and decklists")
         )
-        .addSubcommand(user =>
+        .addSubcommand((user) =>
           user
             .setName("user")
             .setDescription("Show all lists of the user")
-            .addUserOption(userprop =>
+            .addUserOption((userprop) =>
               userprop
                 .setName("user")
                 .setDescription(
@@ -37,46 +36,38 @@ module.exports = {
 
   async execute(interaction) {
     //variables //
-    const subCommandsGroup = interaction.options.getSubcommandGroup();
-    const subCommands = interaction.options.getSubcommand();
-	const  user = interaction.options.getUser("user");
+    const subCommandsGroup = interaction.options.getSubcommandGroup()
+    const subCommands = interaction.options.getSubcommand()
+    const user = interaction.options.getUser("user")
+    let userExists
+    let userEmbed
     /////////////////
     if (subCommandsGroup === "show") {
       if (subCommands === "all") {
+        const api = await showAllUsersEmbed().then((response) => {
+          return response
+        })
 
-			const api =	await showAllUsersEmbed().then( response => {
-			 	 return response;
-				});
+        const embed = new MessageEmbed()
+          .setColor("#0099ff")
+          .setTitle("Statistics of all users: ")
+          .addFields(api)
+          .setDescription("It shows decks that got selected atleast once")
 
-			const embed = new MessageEmbed()
-			.setColor("#0099ff")
-			.setTitle("Statistics of all users: ")
-			.addFields(api)
-			.setDescription('It shows decks that got selected on atleast once');
-
-			await interaction.reply({ embeds: [embed] });
-
+        await interaction.reply({ embeds: [embed] })
       }
       if (subCommands === "user") {
+        userExists = await findUserInDatabase(user.id)
+      }
 
-		const userExists = await findUserInDatabase(user.id).then(res => {
-			return res;
-		})
-
-		if(userExists){
-			const api = await showCertainUserEmbed(interaction).then( res => {
-				return res;
-			} )
-				await interaction.reply({ embeds: [api] });
-		}
-		else {
- await interaction.reply(
-            ` ${
-				user.username
-            } has not registered to database`
-          );
-		}
+      if (userExists) {
+        userEmbed = await showCertainUserEmbed(interaction)
+        await interaction.reply({ embeds: [userEmbed] })
+      } else {
+        await interaction.reply(
+          ` ${user.username} has not registered to database`
+        )
       }
     }
   },
-};
+}

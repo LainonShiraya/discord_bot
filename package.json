@@ -18,5 +18,9 @@
     "dotenv": "^16.0.3",
     "mysql": "^2.18.1",
     "mysql2": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.7.0",
+    "prettier": "^2.5.1"
   }
 }
