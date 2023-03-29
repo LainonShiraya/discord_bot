@@ -62,21 +62,21 @@ async function deleteGameFromDatabase(gameId, discordId) {
     "delete game from game inner join deck_game on game.Game_ID = deck_game.Game_Game_ID  where Game_ID = ? AND Discord_Channel_ID = ?",
     [gameID, discordId]
   )
-  Promise.all([
-    updateQuery(
-      "update deck_stats set Loses = Loses -1 where ( Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID = ? ) AND Discord_Channel_ID = ?",
-      [
-        GameParams.Deck_1_Deck_ID,
-        GameParams.Deck_2_Deck_ID,
-        GameParams.Deck_3_Deck_ID,
-        discordId,
-      ]
-    ),
-    updateQuery(
+
+  await updateQuery(
+    "update deck_stats set Loses = Loses -1 where ( Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID = ? ) AND Discord_Channel_ID = ?",
+    [
+      GameParams.Deck_1_Deck_ID,
+      GameParams.Deck_2_Deck_ID,
+      GameParams.Deck_3_Deck_ID,
+      discordId,
+    ]
+  ),
+    await updateQuery(
       "update deck_stats  set Wins = Wins -1 where Deck_Deck_ID = ? AND Discord_Channel_ID = ? ",
       [GameParams.Winner, discordId]
     ),
-    updateQuery(
+    await updateQuery(
       "update deck_stats  set Games = Games -1 where ( Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID = ? ) AND Discord_Channel_ID = ?",
       [
         GameParams.Deck_1_Deck_ID,
@@ -85,8 +85,7 @@ async function deleteGameFromDatabase(gameId, discordId) {
         GameParams.Winner,
         discordId,
       ]
-    ),
-  ])
+    )
   return true
 }
 

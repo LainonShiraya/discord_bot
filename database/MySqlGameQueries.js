@@ -41,21 +41,20 @@ async function assignDecksToGame(
     ]
   )
   if (addDecksToTheGame) {
-    Promise.all([
-      updateQuery(
-        "update deck_stats set Loses = Loses + 1 where ( Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID  = ? ) AND Selected = true AND Discord_Channel_ID = ?",
-        [
-          playerDeck_1.Deck_ID,
-          playerDeck_2.Deck_ID,
-          playerDeck_3.Deck_ID,
-          discordId,
-        ]
-      ),
-      updateQuery(
+    await updateQuery(
+      "update deck_stats set Loses = Loses + 1 where ( Deck_Deck_ID = ? or Deck_Deck_ID = ? or Deck_Deck_ID  = ? ) AND Selected = true AND Discord_Channel_ID = ?",
+      [
+        playerDeck_1.Deck_ID,
+        playerDeck_2.Deck_ID,
+        playerDeck_3.Deck_ID,
+        discordId,
+      ]
+    ),
+      await updateQuery(
         "update deck_stats set Wins = Wins + 1 where Deck_Deck_ID  = ? AND Discord_Channel_ID = ?",
         [winnerDeck.Deck_ID, discordId]
       ),
-      updateQuery(
+      await updateQuery(
         "update deck_stats set Games = Games + 1 where ( Deck_Deck_ID  = ? or Deck_Deck_ID  = ? or Deck_Deck_ID  = ? or Deck_Deck_ID  = ? ) AND Selected = true AND Discord_Channel_ID = ?",
         [
           playerDeck_1.Deck_ID,
@@ -64,8 +63,7 @@ async function assignDecksToGame(
           winnerDeck.Deck_ID,
           discordId,
         ]
-      ),
-    ])
+      )
     return true
   }
   return false

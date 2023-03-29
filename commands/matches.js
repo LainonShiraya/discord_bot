@@ -2,10 +2,8 @@ const { SlashCommandBuilder } = require("@discordjs/builders")
 const {
   showMatchHistoryAll,
   showMatchHistoryUser,
-} = require("../functions/embedCreatorFunctions")
-const {
-  deleteGameFromHistory,
-} = require("../functions/MysqlDataManagementFunctions")
+} = require("../functions/EmbedCreatorFunctions")
+const { deleteGameFromDatabase } = require("../database/MySqlGameQueries")
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -61,7 +59,7 @@ module.exports = {
       )
       if (hasRole) {
         const commandUser = interaction.user.username
-        const gameDeleted = await deleteGameFromHistory(gameId, discordId)
+        const gameDeleted = await deleteGameFromDatabase(gameId, discordId)
         if (gameDeleted) {
           await interaction.reply(
             `${commandUser} successfully deleted a match from the history~!`

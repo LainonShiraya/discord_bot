@@ -4,7 +4,7 @@ const { findUserInDatabase } = require("../database/MySqlUserQueries.js")
 const {
   showAllUsersEmbed,
   showCertainUserEmbed,
-} = require("../functions/embedCreatorFunctions")
+} = require("../functions/EmbedCreatorFunctions")
 
 module.exports = {
   data: new SlashCommandBuilder()
